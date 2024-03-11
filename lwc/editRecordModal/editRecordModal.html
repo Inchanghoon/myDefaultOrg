@@ -1,0 +1,38 @@
+<template>
+    <lightning-modal-header label={editTarget}></lightning-modal-header>
+    <lightning-modal-body>
+        <lightning-record-edit-form record-id={recordId} object-api-name={objectApiName} onsuccess={handleSuccess} onerror={handleError}>
+            <div class="slds-col" style="text-align: right;">
+                <span style="color: red;">*</span><span>&nbsp;= Required Information</span>
+            </div><br />
+            <div class="slds-col" style="display: flex; flex-direction: row; justify-content: space-between;">
+                <div class="slds-col">
+                    <lightning-input-field field-name="Name" required></lightning-input-field>
+                    <lightning-input-field field-name="BillingAddress__c"></lightning-input-field>
+                    <lightning-input-field field-name="Phone__c"></lightning-input-field>
+                    <lightning-input-field field-name="Type__c"></lightning-input-field>
+                </div>
+                <div class="slds-col">
+                    <lightning-input-field field-name="NumberOfEmployees__c"></lightning-input-field>
+                    <lightning-input-field field-name="Rating__c"></lightning-input-field>
+                    <lightning-input-field field-name="AnnualRevenue__c"></lightning-input-field>
+                </div>
+            </div>
+            <br/><br />
+        </lightning-record-edit-form>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <button class="slds-button slds-button_neutral" onclick={hideModalBox}>Cancle</button>&nbsp;&nbsp;
+        <lightning-button 
+            class="slds-m-top_small"
+            variant="brand"
+            type="submit"
+            label="Update"
+            name="update"
+            onclick={handleFakeSubmit}
+        ></lightning-button>
+    </lightning-modal-footer>
+    <template if:true={showSpinner}>
+        <lightning-spinner alternative-text="Loading..." variant="brand" size="large"></lightning-spinner>
+    </template>
+</template>

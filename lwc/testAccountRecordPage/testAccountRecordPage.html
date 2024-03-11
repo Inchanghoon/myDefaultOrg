@@ -1,0 +1,135 @@
+<template>
+    <div class="slds-page-header slds-page-header_record-home" style="margin-bottom: 14px; box-shadow: 0 2px 2px 0 rgba(0,0,0,0.1);">
+        <div class="slds-page-header__row">
+            <div class="slds-page-header__col-title">
+                <div class="slds-media">
+                    <div class="slds-media__figure">
+                        <span class="slds-icon_container slds-icon-standard-account">
+                            <lightning-icon icon-name="standard:account" alternative-text="Account" title="Account"></lightning-icon>
+                        </span>
+                    </div>
+                    <div class="slds-media__body" style="height: 30px; margin-top: -3px;">
+                        <div class="slds-page-header__name">
+                            <div class="slds-page-header_name-title">
+                                <h1>
+                                    <span>{objectApiName}</span>
+                                    <span class="slds-page-header__title slds-truncate" title="testAccount1">{recordName}</span>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-page-header__col-actions">
+                <div class="slds-page-header__controls">
+                    <lightning-button-group>
+                        <lightning-button label="New Contact" title="New Contact" onclick={handleNewContact}></lightning-button>
+                        <lightning-button label="Edit" title="Edit" onclick={handleEdit}></lightning-button>
+                        <lightning-button label="New Opportunity" title="New Opportunity" onclick={handleNewOppty}></lightning-button>
+                        <lightning-button-menu variant="border-filled" alternative-text="Show menu" menu-alignment="right">
+                            <lightning-menu-item label="New Case" title="New Case" onclick={handleCase}></lightning-menu-item>
+                            <lightning-menu-item label="New Lead" title="New Lead" onclick={handleLead}></lightning-menu-item>
+                            <lightning-menu-item label="Delete" title="Delete" onclick={handleDelete}></lightning-menu-item>
+                            <lightning-menu-item label="Clone" title="Clone" onclick={handleClone}></lightning-menu-item>
+                            <lightning-menu-item label="Change Owner" title="Change Owner"></lightning-menu-item>
+                            <lightning-menu-item label="Printable View" title="Printable View"></lightning-menu-item>
+                            <lightning-menu-item label="Sharing" title="Sharing"></lightning-menu-item>
+                            <lightning-menu-item label="Sharing Hierarchy" title="Sharing Hierarchy"></lightning-menu-item>
+                        </lightning-button-menu>
+                    </lightning-button-group>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slds-col slds-size_8-of-12" style="box-shadow: 0 2px 2px 0 rgba(0,0,0,0.1);">
+        <div class="slds-tabs_default slds-tabs_medium" style="background: white; border-radius: 3px; padding: 10px 20px 20px 20px;">
+            <lightning-tabset active-tab-value="details">
+                <lightning-tab label="Related" value="ralated">
+                    Related!!
+                </lightning-tab>
+                <lightning-tab label="Details" value="details"><br />
+                    <lightning-record-form object-api-name={objectApiName} record-id={recordId} fields={fields} columns="2"></lightning-record-form>
+                </lightning-tab>
+            </lightning-tabset>
+        </div>
+        <!-- 삭제 확인 모달 -->
+        <template if:true={deleteFlag}>
+            <section class="slds-modal slds-fade-in-open" role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={hideModalBox}>
+                            <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Delete {objectApiName}</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <p style="text-align: center; font-size: 16px;">" {objectApiName} "오브젝트의 " {recordName} " 레코드를 삭제하시겠습니까?</p>
+                    </div>
+                    <footer class="slds-modal__footer" style="align-items: center;">
+                        <button class="slds-button slds-button_neutral" onclick={hideModalBox}>Cancle</button>&nbsp;&nbsp;
+                        <lightning-button 
+                            class="slds-m-top_small"
+                            variant="brand"
+                            type="submit"
+                            label="Delete"
+                            name="delete"
+                            onclick={handleDeleteOkay}
+                        ></lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+        <!-- Action New 모달 -->
+        <template if:true={actionFlag}>
+            <section class="slds-modal slds-fade-in-open" role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={hideModalBox}>
+                            <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-text-heading_medium slds-hyphenate">{buttonName}</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <template if:false={cloneFlag}>
+                            <lightning-record-edit-form object-api-name={actionObject} onsuccess={handleSuccess} onerror={handleError}>
+                                <template for:each={actionInput} for:item="item">
+                                    <lightning-input-field key={item} field-name={item}></lightning-input-field>
+                                </template>
+                            </lightning-record-edit-form>
+                        </template>
+                        <template if:true={cloneFlag}>
+                            <div class="slds-col" style="text-align: right;">
+                                <span style="color: red;">*</span><span>&nbsp;= Required Information</span>
+                            </div>
+                            <p style="background: #eee; font-size: 16px; padding: 2px 0px 2px 0px; border-radius: 3px;">&nbsp;&nbsp;Information</p>
+                            <template for:each={testAccountRecord} for:item="item">
+                                <lightning-input key={item.id} class="cloneName" type="text" label="Name" value={item.Name}></lightning-input>
+                                <lightning-input key={item.id} class="cloneBillingAddress" type="text" label="청구지" value={item.BillingAddress__c}></lightning-input>
+                                <lightning-input key={item.id} class="clonePhone" type="phone" label="전화번호" value={item.Phone__c}></lightning-input>
+                                <lightning-combobox key={item.id} class="cloneType" label="유형" options={typeOptions} value={item.Type__c}></lightning-combobox>
+                                <lightning-input key={item.id} class="cloneNumberOfEmployees" type="number" label="직원" value={item.NumberOfEmployees__c}></lightning-input>
+                                <lightning-combobox key={item.id} class="cloneRating" options={ratingOptions} label="등급" value={item.Rating__c}></lightning-combobox>
+                                <lightning-input key={item.id} class="cloneAnnualRevenue" type="number" label="연매출액" value={item.AnnualRevenue__c}></lightning-input>
+                            </template>
+                        </template><br />
+                    </div>
+                    <footer class="slds-modal__footer" style="align-items: center;">
+                        <button class="slds-button slds-button_neutral" onclick={hideModalBox}>Cancle</button>&nbsp;&nbsp;
+                        <lightning-button 
+                            class="slds-m-top_small"
+                            variant="brand"
+                            type="submit"
+                            label="Save"
+                            name="save"
+                            onclick={handleSaveOkay}
+                        ></lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+    </div>
+</template>

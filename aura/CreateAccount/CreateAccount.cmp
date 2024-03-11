@@ -1,0 +1,87 @@
+<!--inculded controller-->
+
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" access="global" controller="CreateAccount" >
+
+<!--created collection attribute type[] (Array) of account-->
+
+   <aura:attribute name="AccountList" type="Account" default="{'sobjectType':'Account',
+
+                                                             'Name':'',
+
+                                                             'AccountNumber':'',
+
+                                                             'Phone':'',
+
+                                                             'Website':''}"/>
+
+<!--attribute to display the accounts-->
+
+   <aura:attribute name="AccListToDisplay" type="Account[]"/>
+
+<!--this handler to load the account's when page loads/Renders-->
+
+   <aura:handler name="init" value="{! this }" action="{!c.displayAccount}"/>
+
+   <lightning:card title="Create Record"> 
+
+       <lightning:input name="accName" label="Account Name " value="{!v.AccountList.Name}" />
+
+       <lightning:input name="accNumber" label="Account Number " value="{!v.AccountList.AccountNumber}" />
+
+       <lightning:input name="accPhone" label="Phone" value="{!v.AccountList.Phone}" />
+
+       <lightning:input name="accRating" label="Website" value="{!v.AccountList.Website}" />
+
+       <lightning:button variant="brand" label="Create Account" title="Brand action" onclick="{!c.CreateAccount }"/>
+
+   </lightning:card>
+
+<!--below code to how to display records in table-->
+
+   <lightning:card title ="Display Record"> 
+
+       <table class="slds-table slds-table--bordered slds-table--cell-buffer">
+
+           <thead>
+
+           <tr >
+
+               <th>Name </th>
+
+               <th>Account Number</th>
+
+               <th>Phone</th>
+
+               <th>Website</th>
+
+           </tr>
+
+       </thead>
+
+           <tbody>
+
+<!--this is iteration i.e works as for/for-each -->
+
+               <aura:iteration items="{!v.AccListToDisplay}" var="acc">
+
+                   <tr>
+
+                      <td>{!acc.Name}</td>
+
+                      <td>{!acc.AccountNumber}</td>
+
+                      <td>{!acc.Phone}</td>
+
+                      <td>{!acc.Website}</td>
+
+                   </tr>
+
+               </aura:iteration>
+
+           </tbody>
+
+       </table>
+
+   </lightning:card>
+
+</aura:component>

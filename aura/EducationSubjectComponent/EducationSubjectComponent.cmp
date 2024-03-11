@@ -1,0 +1,24 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,
+flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,
+force:lightningQuickAction" controller="EducationSubjectController" access="global">
+    <aura:attribute name="EducationSubjectList" type="List" default="[]" />
+    <aura:attribute name="columnInfo" type="List" default="[
+            {label: 'ID', fieldName: 'Id', type: 'text'},
+            {label: '입력명', fieldName: 'Name', type: 'text'},
+            {label: '정기/수시 구분', fieldName: 'ProgramCheck__c', type: 'Boolean'},
+            {label: '과목명', fieldName: 'ClassName__c', type: 'text'},
+            {label: '교육 구분', fieldName: 'EducationCategoty__c', type: 'text'},
+            {label: '상태', fieldName: 'Status__c', type: 'text'},
+            {label: '교육 시작일', fieldName: 'ClassStartDay__c', type: 'Date'},
+            {label: '교육 종료일', fieldName: 'ClassEndDay__c', type: 'Date'}
+    ]" />
+    <div style="color: white; font-size: 20px">교육 과목 조회</div>
+    <lightning:datatable class="slds-table"
+            columns="{! v.columnInfo}"
+            data="{! v.EducationSubjectList}" 
+            keyField="Id"
+            minColumnWidth="120"
+    />
+    <aura:handler name="init" value="{!this}" action="{!c.myAction}" />
+    <!-- <lightning:button label="교육 목록 조회" class="slds-button slds-button_brand" name="viewButton" onclick="{!c.viewEducationSubjectList}" /> -->
+</aura:component>	

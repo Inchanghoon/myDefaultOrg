@@ -1,0 +1,82 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,
+force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" controller="TestController001" access="global">
+    <!-- attributes -->
+    <aura:attribute name="strMsg" type="String" default="테스트 메시지"/>
+    <aura:attribute name="isManager" type="Boolean" default="True"/>
+    <aura:attribute name="strLabel" type="String"/>
+    <aura:attribute name="listvalues" type="list" default="[
+            {id:1, subject:'KOR', studentName:'Kim', score:'90'}, 
+            {id:2, subject:'MAT', studentName:'Kim', score:'80'}, 
+            {id:3, subject:'KOR', studentName:'Lee', score:'95'}
+            ]" />
+    <aura:attribute name="columnInfo" type="List" default="[q
+             {label : '과목', fieldName: 'subject', type: 'text'},
+             {label : '이름', fieldName: 'studentName', type: 'text'},
+             {label : '점수', fieldName: 'score', type: 'text'},
+            ]" />
+    <!-- Contact list 조회 -->
+    <aura:attribute name="contactList" type="list" default="[]" />
+    <aura:attribute name="columnInfo2" type="List" default="[
+            {label : 'Id', fieldName: 'Id', type: 'text'},
+            {label : 'Name', fieldName: 'Name', type: 'text'},
+            {label : 'FirstName', fieldName: 'FirstName', type: 'text'},
+            {label : 'LastName', fieldName: 'LastName', type: 'text'},
+            ]" />
+    <!-- input 필드용 attribute -->
+    <aura:attribute name="contactFirstName" type="String"/>
+    <aura:attribute name="contactLastName" type="String"/>
+
+    <table border="1" width="500px" cellpadding="0" cellspacing="0">
+        <tr>
+            <th>과목명</th>
+            <th>학생</th>
+            <th>점수</th>
+            <th>인덱스</th>
+        </tr>
+        <!-- items: 반복을 돌릴 배열 / var: items의 값을 저장할 변수명 / indexVar: 반복문 인덱스 변수명 -->
+        <aura:iteration items="{! v.listvalues}" var="item" indexVar="idx">
+            <tr>
+                <td>{! item.subject}</td>
+                <td>{! item.studentName}</td>
+                <td>{! item.score}</td>
+                <td>{! idx}</td>
+            </tr>
+        </aura:iteration>
+    </table>
+    <br/>
+    <!-- columns= 테이블 제목 /  -->
+    <lightning:datatable class="table-css"
+                     columns="{! v.columnInfo }"
+                     data="{! v.listvalues }"
+                     keyField="Id"
+                     minColumnWidth="120"/>
+    <br/>
+    Contact List 조회
+    <br/>
+    <lightning:datatable class="table-css"
+                     columns="{! v.columnInfo2 }"
+                     data="{! v.contactList }"
+                     keyField="Id"
+                     minColumnWidth="120"/>
+    <br/><br/>
+    첫 번째 아우라 컴포넌트 <br />
+    <!-- 변수나 오브젝트를 가져올 때 v. 사용 -->
+    <aura:if isTrue="{!v.isManager}">
+        Message is => {! v.strMsg}<br />
+        <aura:set attribute="else">
+            record Id is => {! v.recordId} <br />
+        </aura:set>
+    </aura:if>
+    Label Message => {! v.strLabel} <br/>
+    another Label Message => {!$Label.c.LabelTest002} <br />
+    <!-- 함수를 가져올 때 c. 사용 -->
+
+    <!-- contactFirstName, contactLastName 이 attribute에 정의되어 있어야 한다. -->
+    <lightning:input type="text" label="First Name" value="{! v.contactFirstName}" />&nbsp;&nbsp;
+    <lightning:input type="text" label="Last Name"  value="{! v.contactLastName}" />&nbsp;&nbsp;<br/>
+    <lightning:button label="Contact 입력" name="registContact" onclick="{!c.registContact}" /><br />
+
+    <lightning:button label="눌러봐" class="slds-button slds-button_brand" name="accept" onclick="{!c.changeMsg}" /> &nbsp;&nbsp;
+    <lightning:button label="Toast Message" class="slds-button slds-button_destructive" name="viewError" onclick="{!c.viewErrorMessage}" /> &nbsp;&nbsp;
+    <lightning:button label="Contact 목록 조회" class="slds-button slds-button_destructive" name="ContactView" onclick="{!c.viewContactList}" /> &nbsp;&nbsp;
+</aura:component>

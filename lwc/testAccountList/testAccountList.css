@@ -1,0 +1,19 @@
+.pageButton{
+    font-weight: bold;
+    --slds-c-icon-color-foreground: blue;
+}
+.pageButtonWrap {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+/* .checkedPage {
+    --slds-c-button-neutral-color-background : #fff;
+    --slds-c-button-neutral-color-background-active : #ff6a13;
+} */
+/* .checkedPage:active {
+    --slds-c-button-neutral-color-background : #ff6a13;
+} */
+.checkedPage {
+    font-weight: bold;
+}

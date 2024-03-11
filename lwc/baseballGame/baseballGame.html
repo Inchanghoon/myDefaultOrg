@@ -1,0 +1,22 @@
+<template>
+    <lightning-input class="inputFirst" type="number" placeholder="0~9까지의 숫자 입력" label="첫번째 숫자"></lightning-input>
+    <lightning-input class="inputSecond" type="number" placeholder="0~9까지의 숫자 입력" label="두번째 숫자"></lightning-input>
+    <lightning-input class="inputThird" type="number" placeholder="0~9까지의 숫자 입력" label="세번째 숫자"></lightning-input><br />
+    <template if:true={gameFlag}>
+        <lightning-button label="숫자 맞추기" onclick={checkNumber}></lightning-button>&nbsp;&nbsp;
+    </template>
+    <lightning-button label="재시작" onclick={resetGame}></lightning-button>
+    <template if:true={errorFlag}>
+        <p>{errorMsg}</p>
+    </template>
+    <ul style="text-align: center; font-size: 20px;">
+        <li>총 게임 횟수 : {playCount}</li>
+        <li>맥스 게임 횟수 : {maxCount}</li>
+        <li>strike count : {strikeCount}</li>
+        <li>ball count : {ballCount}</li>
+        <li>{sample1}</li>
+        <template if:false={gameFlag}>
+            <li>{winText}</li>
+        </template>
+    </ul>
+</template>

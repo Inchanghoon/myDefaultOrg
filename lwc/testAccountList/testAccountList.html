@@ -1,0 +1,171 @@
+<template>
+    <div class="slds-wrap slds-card">
+        <div class="slds-col">
+            <lightning-card class="slds-card_boundary">
+                <lightning-icon icon-name="standard:account" size="medium" slot="title"></lightning-icon>
+                <lightning-button-menu 
+                    class="slds-dropdown_large" 
+                    style="position: absolute; color: #333; font-size: 18px; padding-left: 10px;" 
+                    label={viewListLabel}
+                    alternative-text="Show menu" 
+                    variant="bare" 
+                    slot="title"
+                >
+                    <p style="width: 300px; padding-left: 15px; font-size: 12px; color: #555; letter-spacing: 1px; line-height: 32px;">LIST VIEWS</p>
+                    <lightning-menu-item value="All" label="All Test Account" onclick={handleAllView} checked={viewListAll}></lightning-menu-item>
+                    <lightning-menu-item value="RecentlyView" label="Recently Viewed" onclick={handleRecentlyView} checked={viewListRecently}></lightning-menu-item>
+                </lightning-button-menu>
+                <lightning-button-group slot="actions">
+                    <lightning-button label="New" onclick={handleNewBtn}></lightning-button>
+                    <lightning-button label="Delete" onclick={handleDeleteBtn}></lightning-button>
+                    <lightning-button label="Multiple New" onclick={handleMultipleNew}></lightning-button>
+                    <lightning-button label="Printable View" onclick={handlePrintableViewBtn}></lightning-button>
+                </lightning-button-group>
+            </lightning-card>
+        </div>
+        <div class="slds-grid slds-col" style="margin-top: -15px; border-bottom: 1px solid lightgray; padding-right: 8px;">
+            <div class="slds-col slds-size_8-of-12">
+                <div class="slds-card__body slds-card__body_inner">{recordSize} items • Sorted by {sortBy} • Filtered by {viewListLabel} • Updated a few seconds ago</div>
+            </div>
+            <div class="slds-col slds-size_2-of-12">
+                <div class="slds-col slds-no-flex slds-form-element">
+                    <lightning-input variant="label-hidden" tooltip="Write search text and enter" type="search" placeholder="Search this list..." onkeyup={handleKeyUp}></lightning-input>
+                </div>
+            </div>&nbsp;
+            <div class="slds-col slds-size_2-of-12">
+                <ul class="slds-button-group-row">
+                    <li class="slds-button-group-item">
+                        <div class="slds-dropdown-trigger slds-dropdown-trigger_clicked">
+                            <lightning-button-menu icon-name="utility:settings" tooltip="List View Controls" aria-haspopup="true" aria-expanded="false" title="LIST VIEW CONTROLS">
+                                <p style="text-align: center; font-size: 12px; color: #555; letter-spacing: 0.3px; line-height: 32px;">LIST VIEW CONTROLS</p>
+                                <lightning-menu-item value="new" label="New"></lightning-menu-item>
+                                <lightning-menu-item value="clone" label="Clone"></lightning-menu-item>
+                                <lightning-menu-item value="rename" label="Rename"></lightning-menu-item>
+                                <lightning-menu-item value="sharingSettings" label="Sharing Settings"></lightning-menu-item>
+                                <lightning-menu-item value="editListFilters" label="Edit List Filters"></lightning-menu-item>
+                                <lightning-menu-item value="selectFieldsToDisplay" label="Select Fields to Display"></lightning-menu-item>
+                                <lightning-menu-item value="delete" label="Delete"></lightning-menu-item>
+                                <lightning-menu-item value="resetColumnWidths" label="Reset Column Widths" disabled></lightning-menu-item>
+                            </lightning-button-menu>&nbsp;
+                            <lightning-button-menu icon-name="utility:table" tooltip="Select list display" title="SELECT LIST DISPLAY">
+                                <p style="text-align: center; font-size: 12px; color: #555; letter-spacing: 0.3px; line-height: 32px; font-weight: bold;">Select list display</p>
+                                <lightning-menu-item value="table" label="Table" icon-name="utility:table" checked="true"></lightning-menu-item>
+                                <lightning-menu-item value="kanban" label="Kanban" icon-name="utility:kanban" checked="false"></lightning-menu-item>
+                                <lightning-menu-item value="splitView" label="Split View" icon-name="utility:side_list" checked="false"></lightning-menu-item>
+                            </lightning-button-menu>&nbsp;
+                            <lightning-button-icon icon-name="utility:refresh" title="Refresh" tooltip="Refresh" onclick={handleRefresh}></lightning-button-icon>&nbsp;
+                            <lightning-button-icon icon-name="utility:edit" tooltip="Edit List" title="Edit List" onclick={handleEditList}></lightning-button-icon>&nbsp;
+                            <lightning-button-group>
+                                <lightning-button-icon icon-name="utility:chart" title="Show Chart"></lightning-button-icon>
+                                <lightning-button-icon icon-name="utility:filterList" title="Show Filter"></lightning-button-icon>
+                            </lightning-button-group>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="slds-grid slds-col">
+            <template if:true={queryFlag}>
+                <c-l-w-c-custom-datatable-type
+                    data-id="datarow"
+                    style="width: 100%; height: 494px;"
+                    key-field="Id"
+                    data={getTestAccountList}
+                    columns={columns}
+                    show-row-number-column
+                    onrowaction={handleRowAction}
+                    onsave={handleSave}
+                    draft-values={draftValues} 
+                    sorted-by={sortBy}
+                    sorted-direction={sortDirection}
+                    onsort={doSorting}
+                    onrowselection={getSelectedRecords}
+                ></c-l-w-c-custom-datatable-type>
+            </template>
+            <template if:false={queryFlag}>
+                <c-l-w-c-custom-datatable-type
+                    style="width: 100%; height: 494px;"
+                    key-field="Id"
+                    data={getSearchAccountList}
+                    columns={columns}
+                    show-row-number-column
+                    onrowaction={handleRowAction}
+                    onsave={handleSave}
+                    draft-values={draftValues}
+                    sorted-by={sortBy}
+                    sorted-direction={sortDirection}
+                    onsort={doSorting}
+                    onrowselection={getSelectedRecords}
+                ></c-l-w-c-custom-datatable-type>
+            </template>
+        </div>
+        <template if:true={viewListAll}>
+            <template if:true={buttonFlag}>
+                <div class="slds-col" style="border-top: 1px solid #eee;">
+                    <br />
+                    <div class="pageButtonWrap">
+                        <lightning-button-icon icon-name="utility:jump_to_left" class="pageButton pageButtonBack" onclick={handleFirstPage}></lightning-button-icon>&nbsp;&nbsp;
+                        <lightning-button-icon icon-name="utility:left" class="pageButton pageButtonBack" onclick={handlePrevPage}></lightning-button-icon>&nbsp;&nbsp;
+                        <lightning-button-group>
+                            <template for:each={pageNumber} for:item="item" for:index="idx">
+                                <lightning-button key={item} class="checkedPage" label={item} onclick={handlePage}></lightning-button>
+                            </template>
+                        </lightning-button-group>&nbsp;&nbsp;
+                        <lightning-button-icon icon-name="utility:right" class="pageButton pageButtonNext" onclick={handleNextPage}></lightning-button-icon>&nbsp;&nbsp;
+                        <lightning-button-icon icon-name="utility:jump_to_right" class="pageButton pageButtonNext" onclick={handleLastPage}></lightning-button-icon>
+                    </div>
+                    <div class="slds-col" style="text-align: center; padding: 5px;">Page : {pageIndex} / {pageCount}</div>
+                </div>
+
+            </template>
+        </template>
+    </div>
+    <!-- <template if:true={isShowModal}>
+        <section class="slds-modal slds-fade-in-open" role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={hideModalBox}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small"></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Edit {editTarget}</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <lightning-record-edit-form record-id={recordId} object-api-name={objectApiName} onsubmit={handleSubmit} onsuccess={handleSuccess} onerror={handleError}>
+                        <div class="slds-col" style="text-align: right;">
+                            <span style="color: red;">*</span><span>&nbsp;= Required Information</span>
+                        </div><br />
+                        <div class="slds-col" style="display: flex; flex-direction: row; justify-content: space-between;">
+                            <div class="slds-col">
+                                <lightning-input-field field-name="Name" required></lightning-input-field>
+                                <lightning-input-field field-name="BillingAddress__c"></lightning-input-field>
+                                <lightning-input-field field-name="Phone__c"></lightning-input-field>
+                                <lightning-input-field field-name="Type__c"></lightning-input-field>
+                            </div>
+                            <div class="slds-col">
+                                <lightning-input-field field-name="NumberOfEmployees__c"></lightning-input-field>
+                                <lightning-input-field field-name="Rating__c"></lightning-input-field>
+                                <lightning-input-field field-name="AnnualRevenue__c"></lightning-input-field>
+                            </div>
+                        </div>
+                        <br/><br />
+                        <footer class="slds-modal__footer" style="align-items: center;">
+                            <button class="slds-button slds-button_neutral" onclick={hideModalBox}>Cancle</button>&nbsp;&nbsp;
+                            <lightning-button 
+                                class="slds-m-top_small"
+                                variant="brand"
+                                type="submit"
+                                label="Update"
+                                name="update"
+                            ></lightning-button>
+                        </footer>
+                    </lightning-record-edit-form>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template> -->
+    <template if:true={showSpinner}>
+        <lightning-spinner alternative-text="Loading..." variant="brand" size="large"></lightning-spinner>
+    </template>
+</template>

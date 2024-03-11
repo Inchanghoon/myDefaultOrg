@@ -1,0 +1,37 @@
+<template>
+    <lightning-modal-header label="New Multiple Test Account"></lightning-modal-header>
+    <lightning-modal-body>
+        <template for:each={insertList} for:item="item" for:index="index">
+            <div key={item} class="slds-col slds-grid" style="margin: 0 auto; display: flex; flex-direction: row; justify-content: space-between;">
+                <lightning-input type="text" name="name" data-index={index} label={labels.TA_Account_Name} onchange={handleChange} required></lightning-input>
+                <lightning-input type="text" name="billingAddress" data-index={index} onchange={handleChange} label={labels.TA_Billing_Address}></lightning-input>
+                <lightning-input type="text" name="phone" data-index={index} label={labels.TA_Phone} onchange={handleChange}></lightning-input>
+                <lightning-combobox name="type" data-index={index} label={labels.TA_Type} onchange={handleChange} options={picklistType} style="width: 177px;" placeholder="--None--"></lightning-combobox>
+                <lightning-input type="number" name="employees" data-index={index} onchange={handleChange} label={labels.TA_Number_Of_Employees}></lightning-input>
+                <lightning-combobox name="rating" data-index={index} label={labels.TA_Rating} onchange={handleChange} style="width: 177px;" options={picklistRating} placeholder="--None--"></lightning-combobox>
+                <lightning-input type="currency" name="annualRevenue" data-index={index} onchange={handleChange} label={labels.TA_Annual_Revenue}></lightning-input>
+                <lightning-button-icon icon-name="utility:delete" size="medium" 
+                            variant="border-filled" style="padding-top: 24px;"
+                            data-index={index} alternative-text="Delete"     
+                            onclick={deleteRow}>
+                </lightning-button-icon>
+            </div>
+        </template><br />
+        <div class="slds-col" style="display: flex; flex-direction: row; justify-content: flex-start;">
+            <lightning-button icon-name="utility:add" label="Add Row" variant="neutral" onclick={handleAddRow}></lightning-button>
+        </div>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <div class="slds-col" style="display: flex; flex-direction: row; justify-content: space-between;">
+            <div class="slds-col">
+                <button class="slds-button slds-button_neutral" onclick={handleClose}>Cancle</button>&nbsp;&nbsp;
+                <lightning-button type="submit" variant="brand" label="Save" name="insert" onclick={handleSave}></lightning-button>
+            </div>
+        </div>
+    </lightning-modal-footer>
+    <template if:true={showSpinner}>
+        <div class="slds-fade-in-open">
+            <lightning-spinner alternative-text="Loading..." variant="brand" style="display: contents !important" size="large"></lightning-spinner>
+        </div>
+    </template>
+</template>

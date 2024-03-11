@@ -1,0 +1,65 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,
+flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,
+force:lightningQuickAction" controller="SubjectRegistrationController" access="global">
+    <aura:attribute name="subjectRegistrationList" type="List" default="[]" />
+    <!-- EducationSubject__r.Name : wrapper로 따로 표현해야함 -->
+    <aura:attribute name="subjectRegistrationInfo" type="List" default="[
+            {label: '회원명', fieldName: 'Name', type: 'Text'},
+            {label: '승인 상태', fieldName: 'EducationApprovalStatus__c', type: 'text'},
+            {label: '신청 경로', fieldName: 'RegisterPath__c', type: 'text'},
+            {label: '신청일자', fieldName: 'RegisterDate__c', type: 'Date'},
+            {label: '회원직장', fieldName: 'MemberCompany__c', type: 'text'}
+    ]" />
+
+    <!-- insert spot -->
+    <aura:attribute name="registName" type="String" />
+    <aura:attribute name="registEducationSubject" type="Object" />
+    <aura:attribute name="registEducationApprovalStatus" type="String" />
+    <aura:attribute name="registMemberCompany" type="String" />
+    <aura:attribute name="registMemberPosition" type="String" />
+    <aura:attribute name="registMemberPhone" type="String" />
+    <aura:attribute name="registMemberEmail" type="String" />
+    <aura:attribute name="registRegisterPath" type="String" />
+    <aura:attribute name="registRegisterDate" type="Date" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.myAction}" />
+    <lightning:datatable
+            keyField="Id"
+            columns="{! v.subjectRegistrationInfo}"
+            data="{! v.subjectRegistrationList}"
+            minColumnWidth="120"
+    /><br />
+    <lightning:button label="새로고침" name="refreshButton" onclick="{! c.myAction}" />
+    <br /><br />
+    <h2>수강신청</h2>
+    <lightning:recordEditForm
+            aura:id="recordEditForm"
+            recordId="{! v.recordId}"
+            objectApiName="EducationSubject__c"
+    >
+        <lightning:input type="text" label="회원명" value="{! v.registName}" required="true" />
+        <lightning:input type="text" label="교육 과목" value="{! v.recordId}" readonly="true" />
+        
+        <lightning:select label="승인 상태" value="{! v.registEducationApprovalStatus}" required="true">
+            <option value="">--없음--</option>
+            <option value="승인대기" checked="true">승인대기</option>
+            <option value="승인">승인</option>
+            <option value="반려">반려</option>
+        </lightning:select>
+        <lightning:input type="text" label="회원 직장" value="{! v.registMemberCompany}" required="true" />
+        <lightning:input type="text" label="회원직책" value="{! v.registMemberPosition}" required="true" />
+        <lightning:input type="tel" label="회원 전화번호" value="{! v.registMemberPhone}" required="true" />
+        <lightning:input type="email" label="회원 이메일" value="{! v.registMemberEmail}" placeholder="youraddress@company.com" required="true" />
+        <lightning:select label="신청경로" value="{! v.registRegisterPath}" required="true">
+            <option value="">--없음--</option>
+            <option value="전화">전화</option>
+            <option value="이메일">이메일</option>
+            <option value="내부 CRM">내부 CRM</option>
+            <option value="고객채널">고객채널</option>
+        </lightning:select>
+        <lightning:input type="date" label="신청일자" value="{! v.registRegisterDate}" required="true" /><br />
+        <!-- <lightning:button label="Cancel" name="resetButton" onclick="{! c.handleReset}" /> -->
+        <lightning:button label="수강신청 입력" name="registSubject" onclick="{! c.registSubject}"/>
+    </lightning:recordEditForm>
+        <!-- <lightning:inputField fieldName="EducationSubject__c" required="true" /> -->
+</aura:component>
